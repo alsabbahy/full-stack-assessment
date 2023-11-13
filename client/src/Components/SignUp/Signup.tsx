@@ -12,7 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-
+import { useSignIn } from 'react-auth-kit'
+import { register } from '../../Auth'
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,12 +31,23 @@ function Copyright(props: any) {
 const defaultTheme = createTheme()
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const signIn = useSignIn()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password')
+
+    const response = await register({
+      firstName: data.get('firstName') as string,
+      lastName: data.get('lastName') as string,
+      email: data.get('email') as string,
+      password: data.get('password') as string
+    })
+
+    signIn({
+      token: response.token,
+      tokenType: 'Bearer',
+      expiresIn: response.expiresIn,
+      authState: { user: response }
     })
   }
 
@@ -70,12 +82,6 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <TextField required fullWidth name="password" label="Password" type="password" id="password" autoComplete="new-password" />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
               </Grid>
             </Grid>
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>

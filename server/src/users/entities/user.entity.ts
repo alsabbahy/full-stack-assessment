@@ -5,11 +5,6 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema({ collection: 'users' })
 export class User {
-  @Prop({
-    _id: true,
-  })
-  _id: string;
-
   @Prop()
   firstName: string;
 

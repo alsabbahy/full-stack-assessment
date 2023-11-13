@@ -39,7 +39,7 @@ export default function SignIn() {
         token: response.token,
         tokenType: 'Bearer',
         expiresIn: response.expiresIn,
-        authState: { email: data.get('email') as string }
+        authState: { user: response.user }
       })
     } else {
       alert('Invalid credentials')
